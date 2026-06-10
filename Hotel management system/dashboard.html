@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxeStay — Hotel Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C87A;
+  --gold-dim: #8A6E2F;
+  --bg-dark: #0D0F14;
+  --bg-card: #13161E;
+  --bg-card2: #1A1E2A;
+  --bg-input: #1E2230;
+  --border: rgba(201,168,76,0.18);
+  --border-hover: rgba(201,168,76,0.4);
+  --text-primary: #F0EDE4;
+  --text-secondary: #9A9484;
+  --text-muted: #5A5750;
+  --green: #3DD68C;
+  --green-dim: #1A3D2A;
+  --red: #E85555;
+  --red-dim: #3D1A1A;
+  --blue: #5B8DEF;
+  --blue-dim: #1A2540;
+  --purple: #9B6FDB;
+  --purple-dim: #251A3D;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID LAYOUT */
+.app { display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-crown {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.02em;
+}
+
+.logo-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.sidebar-nav { padding: 16px 12px; flex: 1; }
+
+.nav-section-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+  user-select: none;
+}
+
+.nav-item:hover { background: rgba(201,168,76,0.07); color: var(--text-primary); }
+
+.nav-item.active {
+  background: rgba(201,168,76,0.12);
+  color: var(--gold-light);
+  font-weight: 500;
+}
+
+.nav-item.active .nav-icon { color: var(--gold); }
+
+.nav-icon { font-size: 18px; width: 20px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+}
+
+.user-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--bg-dark);
+}
+
+.user-name { font-size: 13px; font-weight: 500; }
+.user-role { font-size: 11px; color: var(--text-muted); }
+
+/* MAIN */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-btn {
+  background: rgba(201,168,76,0.1);
+  border: 1px solid var(--border);
+  color: var(--gold);
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.topbar-btn:hover { background: rgba(201,168,76,0.2); }
+
+.topbar-btn.primary {
+  background: var(--gold);
+  color: var(--bg-dark);
+  border-color: var(--gold);
+}
+
+.topbar-btn.primary:hover { background: var(--gold-light); }
+
+.content { padding: 28px 32px; flex:1; }
+
+/* PAGE SECTIONS */
+.page { display: none; }
+.page.active { display: block; }
+
+/* STATS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.stat-card:hover { border-color: var(--border-hover); }
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  opacity: 0.07;
+  transform: translate(30px, -30px);
+}
+
+.stat-card.gold::before { background: var(--gold); }
+.stat-card.green::before { background: var(--green); }
+.stat-card.blue::before { background: var(--blue); }
+.stat-card.purple::before { background: var(--purple); }
+
+.stat-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.stat-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+.stat-value { font-size: 32px; font-weight: 600; font-family: 'Playfair Display', serif; }
+.stat-value.gold { color: var(--gold-light); }
+.stat-value.green { color: var(--green); }
+.stat-value.blue { color: var(--blue); }
+.stat-value.purple { color: var(--purple); }
+.stat-change { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.stat-change span { color: var(--green); font-weight: 500; }
+
+/* CARDS */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ROOM GRID */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.room-card {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.room-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+
+.room-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.room-type { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+
+.room-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.room-status.available { background: var(--green-dim); color: var(--green); }
+.room-status.occupied  { background: var(--red-dim); color: var(--red); }
+.room-status.cleaning  { background: rgba(232,167,100,0.15); color: #E8A764; }
+.room-status.maintenance { background: var(--blue-dim); color: var(--blue); }
+.room-status.reserved  { background: var(--purple-dim); color: var(--purple); }
+
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+.room-price { font-size: 13px; color: var(--gold); margin-top: 8px; font-weight: 500; }
+.room-floor { position: absolute; top: 12px; right: 14px; font-size: 10px; color: var(--text-muted); }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+tbody td {
+  padding: 13px 14px;
+  color: var(--text-primary);
+}
+
+.guest-name { font-weight: 500; }
+.guest-avatar-sm {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bg-dark);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.tag.green { background: var(--green-dim); color: var(--green); }
+.tag.red   { background: var(--red-dim); color: var(--red); }
+.tag.gold  { background: rgba(201,168,76,0.15); color: var(--gold-light); }
+.tag.blue  { background: var(--blue-dim); color: var(--blue); }
+.tag.purple{ background: var(--purple-dim); color: var(--purple); }
+.tag.gray  { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+
+.action-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all 0.2s;
+  margin-right: 4px;
+}
+
+.action-btn:hover { border-color: var(--border-hover); color: var(--text-primary); }
+.action-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+/* FORM */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1/-1; }
+
+.form-label { font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.05em; }
+
+.form-input, .form-select, .form-textarea {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--gold);
+}
+
+.form-input::placeholder { color: var(--text-muted); }
+.form-select option { background: var(--bg-card2); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+.form-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+.btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--bg-dark);
+  border-color: var(--gold);
+}
+
+.btn-primary:hover { background: var(--gold-light); }
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+.btn-danger {
+  background: transparent;
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.btn-danger:hover { background: var(--red-dim); }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  width: 580px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes modalIn {
+  from { opacity:0; transform: scale(0.9) translateY(20px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  padding: 24px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover { border-color: var(--red); color: var(--red); }
+
+.modal-body { padding: 24px 28px 28px; }
+
+/* CHARTS */
+.occupancy-bar {
+  display: flex;
+  gap: 3px;
+  height: 40px;
+  align-items: flex-end;
+}
+
+.occ-col {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: var(--gold);
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.occ-col:hover { opacity: 1; }
+
+.revenue-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rev-row { display: flex; align-items: center; gap: 12px; }
+.rev-label { font-size: 12px; color: var(--text-muted); width: 80px; }
+.rev-track { flex:1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow:hidden; }
+.rev-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.rev-val { font-size: 12px; color: var(--text-secondary); width: 60px; text-align:right; }
+
+/* QUICK ACTIONS */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.qa-btn {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+
+.qa-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+
+.qa-icon { font-size: 24px; margin-bottom: 8px; }
+.qa-label { font-size: 12px; font-weight: 500; }
+
+/* FILTER ROW */
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-input {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  width: 240px;
+  transition: border-color 0.2s;
+}
+
+.filter-input:focus { border-color: var(--gold); }
+.filter-input::placeholder { color: var(--text-muted); }
+
+.filter-select {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+/* TIMELINE / HOUSEKEEPING */
+.timeline { display: flex; flex-direction: column; gap: 12px; }
+
+.tl-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.tl-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.tl-dot.green { background: var(--green); }
+.tl-dot.red   { background: var(--red); }
+.tl-dot.blue  { background: var(--blue); }
+
+.tl-content { flex:1; }
+.tl-title { font-size: 13.5px; font-weight: 500; margin-bottom: 3px; }
+.tl-sub { font-size: 12px; color: var(--text-muted); }
+
+/* BILLING */
+.invoice-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px;
+}
+
+.invoice-row:last-child { border-bottom: none; }
+
+.invoice-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0 0;
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.amount-gold { color: var(--gold-light); font-weight: 600; }
+
+/* NOTIFICATIONS */
+.notif-list { display: flex; flex-direction: column; gap: 10px; }
+
+.notif-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card2);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--gold);
+  transition: transform 0.15s;
+}
+
+.notif-item:hover { transform: translateX(3px); }
+.notif-item.blue-border { border-left-color: var(--blue); }
+.notif-item.green-border { border-left-color: var(--green); }
+.notif-item.red-border { border-left-color: var(--red); }
+
+.notif-icon { font-size: 18px; flex-shrink: 0; }
+.notif-text { flex:1; font-size: 13.5px; line-height: 1.5; }
+.notif-time { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+/* SEARCH HIGHLIGHT */
+.highlight { background: rgba(201,168,76,0.25); border-radius: 2px; padding: 0 2px; }
+
+/* OCCUPANCY CHART DAYS */
+.occ-labels {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.occ-labels span {
+  flex: 1;
+  text-align: center;
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+/* SCROLL */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 3px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--bg-card2);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s;
+  max-width: 320px;
+  box-shadow: var(--shadow);
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red); }
+
+/* GAUGE */
+.gauge-wrap { text-align: center; }
+
+.gauge-ring {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: conic-gradient(var(--gold) var(--pct), rgba(255,255,255,0.06) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  position: relative;
+}
+
+.gauge-ring::after {
+  content: '';
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  position: absolute;
+}
+
+.gauge-val {
+  position: relative;
+  z-index: 1;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar { width: 200px; }
+  .main { margin-left: 200px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .quick-actions { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-crown">♛</div>
+    <div class="logo-name">LuxeStay</div>
+    <div class="logo-sub">Hotel Management</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <div class="nav-item active" onclick="switchPage('dashboard', this)">
+      <span class="nav-icon">⊞</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="switchPage('reservations', this)">
+      <span class="nav-icon">📅</span> Reservations
+      <span class="nav-badge" id="res-badge">3</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('rooms', this)">
+      <span class="nav-icon">🏨</span> Rooms
+    </div>
+    <div class="nav-item" onclick="switchPage('guests', this)">
+      <span class="nav-icon">👥</span> Guests
+    </div>
+
+    <div class="nav-section-label">Operations</div>
+    <div class="nav-item" onclick="switchPage('checkin', this)">
+      <span class="nav-icon">🔑</span> Check In / Out
+    </div>
+    <div class="nav-item" onclick="switchPage('housekeeping', this)">
+      <span class="nav-icon">🧹</span> Housekeeping
+    </div>
+    <div class="nav-item" onclick="switchPage('billing', this)">
+      <span class="nav-icon">💳</span> Billing
+    </div>
+    <div class="nav-item" onclick="switchPage('restaurant', this)">
+      <span class="nav-icon">🍽️</span> Restaurant
+    </div>
+
+    <div class="nav-section-label">Management</div>
+    <div class="nav-item" onclick="switchPage('staff', this)">
+      <span class="nav-icon">👤</span> Staff
+    </div>
+    <div class="nav-item" onclick="switchPage('reports', this)">
+      <span class="nav-icon">📊</span> Reports
+    </div>
+    <div class="nav-item" onclick="switchPage('inventory', this)">
+      <span class="nav-icon">📦</span> Inventory
+    </div>
+    <div class="nav-item" onclick="switchPage('settings', this)">
+      <span class="nav-icon">⚙️</span> Settings
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">AM</div>
+      <div>
+        <div class="user-name">Alex Morgan</div>
+        <div class="user-role">Hotel Manager</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-right">
+      <span style="font-size:12px; color:var(--text-muted);" id="current-date"></span>
+      <button class="topbar-btn" onclick="showToast('🔔 No new notifications','')">🔔 Alerts</button>
+      <button class="topbar-btn primary" onclick="openModal('new-reservation')">+ New Booking</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="page active" id="page-dashboard">
+
+      <div class="stats-grid">
+        <div class="stat-card gold">
+          <div class="stat-icon">🏨</div>
+          <div class="stat-label">Total Rooms</div>
+          <div class="stat-value gold">48</div>
+          <div class="stat-change"><span>32</span> occupied today</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">📈</div>
+          <div class="stat-label">Occupancy</div>
+          <div class="stat-value green">78%</div>
+          <div class="stat-change"><span>↑ 6%</span> vs last week</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Revenue Today</div>
+          <div class="stat-value blue">₹1.24L</div>
+          <div class="stat-change"><span>↑ 12%</span> vs yesterday</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-label">Avg Rating</div>
+          <div class="stat-value purple">4.7</div>
+          <div class="stat-change"><span>186</span> reviews this month</div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="switchPage('checkin', document.querySelectorAll('.nav-item')[4])">
+          <div class="qa-icon">🔑</div>
+          <div class="qa-label">Check In Guest</div>
+        </button>
+        <button class="qa-btn" onclick="openModal('new-reservation')">
+          <div class="qa-icon">📅</div>
+          <div class="qa-label">New Reservation</div>
+        </button>
+        <button class="qa-btn" onclick="switchPage('housekeeping', document.querySelectorAll('.nav-item')[5])">
+          <div class="qa-icon">🧹</div>
+          <div class="qa-label">Housekeeping</div>
+        </button>
+        <button class="qa-btn" onclick="switchPage('billing', document.querySelectorAll('.nav-item')[6])">
+          <div class="qa-icon">🧾</div>
+          <div class="qa-label">Generate Invoice</div>
+        </button>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Weekly Occupancy</div>
+              <div class="card-sub">Rooms filled per day</div>
+            </div>
+          </div>
+          <div class="occupancy-bar" id="occ-chart"></div>
+          <div class="occ-labels" id="occ-labels"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Revenue by Category</div>
+              <div class="card-sub">This month</div>
+            </div>
+          </div>
+          <div class="revenue-bar">
+            <div class="rev-row">
+              <div class="rev-label">Rooms</div>
+              <div class="rev-track"><div class="rev-fill" style="width:82%"></div></div>
+              <div class="rev-val">₹8.2L</div>
+            </div>
+            <div class="rev-row">
+              <div class="rev-label">Restaurant</div>
+              <div class="rev-track"><div class="rev-fill" style="width:54%"></div></div>
+              <div class="rev-val">₹3.4L</div>
+            </div>
+            <div class="rev-row">
+              <div class="rev-label">Spa & Gym</div>
+              <div class="rev-track"><div class="rev-fill" style="width:36%"></div></div>
+              <div class="rev-val">₹1.8L</div>
+            </div>
+            <div class="rev-row">
+              <div class="rev-label">Events</div>
+              <div class="rev-track"><div class="rev-fill" style="width:24%"></div></div>
+              <div class="rev-val">₹1.2L</div>
+            </div>
+            <div class="rev-row">
+              <div class="rev-label">Laundry</div>
+              <div class="rev-track"><div class="rev-fill" style="width:14%"></div></div>
+              <div class="rev-val">₹0.4L</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Today's Activity</div>
+          </div>
+          <div class="timeline" id="activity-feed"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Room Status Summary</div>
+          </div>
+          <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; padding: 10px 0;">
+            <div class="gauge-wrap">
+              <div class="gauge-ring" style="--pct: 265.2deg;">
+                <div class="gauge-val">32</div>
+              </div>
+              <div style="font-size:11px; color:var(--red);">● Occupied</div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-ring" style="--pct: 75.6deg; background: conic-gradient(var(--green) 75.6deg, rgba(255,255,255,0.06) 0);">
+                <div class="gauge-val" style="color:var(--green);">9</div>
+              </div>
+              <div style="font-size:11px; color:var(--green);">● Available</div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-ring" style="--pct: 37.8deg; background: conic-gradient(#E8A764 37.8deg, rgba(255,255,255,0.06) 0);">
+                <div class="gauge-val" style="color:#E8A764;">5</div>
+              </div>
+              <div style="font-size:11px; color:#E8A764;">● Cleaning</div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-ring" style="--pct: 15.12deg; background: conic-gradient(var(--blue) 15.12deg, rgba(255,255,255,0.06) 0);">
+                <div class="gauge-val" style="color:var(--blue);">2</div>
+              </div>
+              <div style="font-size:11px; color:var(--blue);">● Maintenance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Upcoming Check-ins Today</div>
+          <button class="action-btn" onclick="switchPage('checkin', document.querySelectorAll('.nav-item')[4])">View All →</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Guest</th><th>Room</th><th>Type</th><th>Nights</th><th>Amount</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="today-checkins"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== RESERVATIONS ========== -->
+    <div class="page" id="page-reservations">
+      <div class="filter-row">
+        <input class="filter-input" placeholder="🔍 Search by guest, room or booking ID..." oninput="filterReservations(this.value)">
+        <select class="filter-select" onchange="filterByStatus(this.value)">
+          <option value="">All Status</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="pending">Pending</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="checked-in">Checked In</option>
+        </select>
+        <button class="topbar-btn primary" onclick="openModal('new-reservation')">+ New Reservation</button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Booking ID</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="res-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ROOMS ========== -->
+    <div class="page" id="page-rooms">
+      <div class="filter-row">
+        <select class="filter-select" onchange="filterRooms(this.value)">
+          <option value="">All Status</option>
+          <option value="available">Available</option>
+          <option value="occupied">Occupied</option>
+          <option value="cleaning">Cleaning</option>
+          <option value="maintenance">Maintenance</option>
+          <option value="reserved">Reserved</option>
+        </select>
+        <select class="filter-select" onchange="filterRoomType(this.value)">
+          <option value="">All Types</option>
+          <option value="Standard">Standard</option>
+          <option value="Deluxe">Deluxe</option>
+          <option value="Suite">Suite</option>
+          <option value="Presidential">Presidential</option>
+        </select>
+        <button class="topbar-btn primary" onclick="openModal('add-room')">+ Add Room</button>
+      </div>
+
+      <div class="rooms-grid" id="rooms-grid"></div>
+    </div>
+
+    <!-- ========== GUESTS ========== -->
+    <div class="page" id="page-guests">
+      <div class="filter-row">
+        <input class="filter-input" placeholder="🔍 Search guests..." oninput="filterGuests(this.value)">
+        <button class="topbar-btn primary" onclick="openModal('add-guest')">+ Add Guest</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Guest</th><th>Phone</th><th>Email</th><th>ID Type</th><th>Stays</th><th>Total Spent</th><th>VIP</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="guests-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== CHECK IN/OUT ========== -->
+    <div class="page" id="page-checkin">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔑 Quick Check-In</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Booking ID / Guest Name</label>
+              <input class="form-input" placeholder="BK001 or Guest Name" id="ci-booking">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Room Number</label>
+              <input class="form-input" placeholder="101" id="ci-room">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ID Proof Type</label>
+              <select class="form-select" id="ci-idtype">
+                <option>Aadhaar Card</option>
+                <option>Passport</option>
+                <option>PAN Card</option>
+                <option>Driver License</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ID Number</label>
+              <input class="form-input" placeholder="XXXX-XXXX-XXXX" id="ci-idno">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="doCheckin()">✓ Check In</button>
+            <button class="btn btn-secondary" onclick="clearCheckin()">Clear</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🚪 Quick Check-Out</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Room Number or Guest Name</label>
+              <input class="form-input" placeholder="Room 204 or Guest Name" id="co-room">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Method</label>
+              <select class="form-select" id="co-payment">
+                <option>Cash</option>
+                <option>Credit Card</option>
+                <option>UPI</option>
+                <option>Bank Transfer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Outstanding Amount</label>
+              <input class="form-input" placeholder="₹0" id="co-amount">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="doCheckout()">✓ Check Out & Invoice</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Today's Schedule</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Time</th><th>Guest</th><th>Room</th><th>Type</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="checkin-schedule"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== HOUSEKEEPING ========== -->
+    <div class="page" id="page-housekeeping">
+      <div class="stats-grid" style="grid-template-columns: repeat(3,1fr);">
+        <div class="stat-card green">
+          <div class="stat-label">Cleaned Today</div>
+          <div class="stat-value green">18</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value gold">7</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">In Progress</div>
+          <div class="stat-value blue">3</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Room Cleaning Queue</div>
+            <button class="topbar-btn" onclick="assignAll()">Assign All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Room</th><th>Type</th><th>Priority</th><th>Assigned To</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="hk-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Staff on Duty</div></div>
+          <div class="timeline" id="hk-staff"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== BILLING ========== -->
+    <div class="page" id="page-billing">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Generate Invoice</div>
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label">Select Booking</label>
+            <select class="form-select" onchange="loadInvoice(this.value)">
+              <option value="">— Choose booking —</option>
+              <option value="BK001">BK001 – Arjun Sharma – Room 301</option>
+              <option value="BK002">BK002 – Priya Mehta – Room 205</option>
+              <option value="BK003">BK003 – Vikram Singh – Suite 501</option>
+            </select>
+          </div>
+          <div id="invoice-preview" style="display:none;">
+            <div style="border:1px solid var(--border); border-radius:10px; padding:20px; background:var(--bg-card2);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                <div>
+                  <div style="font-family:'Playfair Display',serif; font-size:18px; color:var(--gold-light);">♛ LuxeStay</div>
+                  <div style="font-size:11px; color:var(--text-muted);">Invoice #<span id="inv-id"></span></div>
+                </div>
+                <div style="text-align:right; font-size:12px; color:var(--text-muted);">
+                  <div id="inv-date"></div>
+                </div>
+              </div>
+              <div id="inv-guest-info" style="margin-bottom:16px; font-size:13px;"></div>
+              <div id="inv-items"></div>
+              <div id="inv-total" class="invoice-total"></div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="showToast('✓ Invoice sent to guest email!','success')">📧 Send Invoice</button>
+              <button class="btn btn-secondary" onclick="showToast('🖨️ Printing invoice...','')">🖨️ Print</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent Payments</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Booking</th><th>Guest</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="payments-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== RESTAURANT ========== -->
+    <div class="page" id="page-restaurant">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card gold">
+          <div class="stat-label">Today's Orders</div>
+          <div class="stat-value gold">34</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Revenue</div>
+          <div class="stat-value green">₹28.4K</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Pending Orders</div>
+          <div class="stat-value purple">5</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Active Orders</div>
+            <button class="topbar-btn primary" onclick="openModal('new-order')">+ New Order</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Order #</th><th>Room</th><th>Items</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="orders-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Menu Categories</div></div>
+          <div style="display:flex; flex-direction:column; gap:10px;" id="menu-cats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== STAFF ========== -->
+    <div class="page" id="page-staff">
+      <div class="filter-row">
+        <input class="filter-input" placeholder="🔍 Search staff...">
+        <button class="topbar-btn primary" onclick="openModal('add-staff')">+ Add Staff</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Shift</th><th>Status</th><th>Salary</th><th>Actions</th></tr></thead>
+            <tbody id="staff-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== REPORTS ========== -->
+    <div class="page" id="page-reports">
+      <div class="stats-grid">
+        <div class="stat-card gold">
+          <div class="stat-label">Monthly Revenue</div>
+          <div class="stat-value gold">₹15.4L</div>
+          <div class="stat-change"><span>↑ 18%</span> vs last month</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Avg Occupancy</div>
+          <div class="stat-value green">74%</div>
+          <div class="stat-change"><span>↑ 8%</span> vs last month</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">RevPAR</div>
+          <div class="stat-value blue">₹3,214</div>
+          <div class="stat-change"><span>↑ 11%</span> vs last month</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Guest Satisfaction</div>
+          <div class="stat-value purple">92%</div>
+          <div class="stat-change"><span>186</span> responses</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Monthly Revenue Trend</div></div>
+          <div class="revenue-bar">
+            <div class="rev-row"><div class="rev-label">Jan</div><div class="rev-track"><div class="rev-fill" style="width:55%"></div></div><div class="rev-val">₹8.5L</div></div>
+            <div class="rev-row"><div class="rev-label">Feb</div><div class="rev-track"><div class="rev-fill" style="width:60%"></div></div><div class="rev-val">₹9.2L</div></div>
+            <div class="rev-row"><div class="rev-label">Mar</div><div class="rev-track"><div class="rev-fill" style="width:72%"></div></div><div class="rev-val">₹11.1L</div></div>
+            <div class="rev-row"><div class="rev-label">Apr</div><div class="rev-track"><div class="rev-fill" style="width:68%"></div></div><div class="rev-val">₹10.5L</div></div>
+            <div class="rev-row"><div class="rev-label">May</div><div class="rev-track"><div class="rev-fill" style="width:85%"></div></div><div class="rev-val">₹13.1L</div></div>
+            <div class="rev-row"><div class="rev-label">Jun</div><div class="rev-track"><div class="rev-fill" style="width:100%"></div></div><div class="rev-val">₹15.4L</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Top Room Categories</div></div>
+          <div class="revenue-bar">
+            <div class="rev-row"><div class="rev-label">Suite</div><div class="rev-track"><div class="rev-fill" style="width:90%"></div></div><div class="rev-val">₹6.8L</div></div>
+            <div class="rev-row"><div class="rev-label">Deluxe</div><div class="rev-track"><div class="rev-fill" style="width:70%"></div></div><div class="rev-val">₹4.2L</div></div>
+            <div class="rev-row"><div class="rev-label">Standard</div><div class="rev-track"><div class="rev-fill" style="width:50%"></div></div><div class="rev-val">₹2.8L</div></div>
+            <div class="rev-row"><div class="rev-label">Presidential</div><div class="rev-track"><div class="rev-fill" style="width:35%"></div></div><div class="rev-val">₹1.6L</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Exportable Reports</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+          <button class="qa-btn" onclick="showToast('📊 Downloading Revenue Report...','')"><div class="qa-icon">📊</div><div class="qa-label">Revenue Report</div></button>
+          <button class="qa-btn" onclick="showToast('📋 Downloading Occupancy Report...','')"><div class="qa-icon">📋</div><div class="qa-label">Occupancy Report</div></button>
+          <button class="qa-btn" onclick="showToast('👥 Downloading Guest Report...','')"><div class="qa-icon">👥</div><div class="qa-label">Guest Report</div></button>
+          <button class="qa-btn" onclick="showToast('💰 Downloading Financial Summary...','')"><div class="qa-icon">💰</div><div class="qa-label">Financial Summary</div></button>
+          <button class="qa-btn" onclick="showToast('⭐ Downloading Review Report...','')"><div class="qa-icon">⭐</div><div class="qa-label">Review Analysis</div></button>
+          <button class="qa-btn" onclick="showToast('📦 Downloading Inventory Report...','')"><div class="qa-icon">📦</div><div class="qa-label">Inventory Report</div></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== INVENTORY ========== -->
+    <div class="page" id="page-inventory">
+      <div class="filter-row">
+        <input class="filter-input" placeholder="🔍 Search items...">
+        <button class="topbar-btn primary" onclick="openModal('add-item')">+ Add Item</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Category</th><th>In Stock</th><th>Minimum</th><th>Unit</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="inventory-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SETTINGS ========== -->
+    <div class="page" id="page-settings">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Hotel Profile</div></div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Hotel Name</label>
+              <input class="form-input" value="LuxeStay Grand">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Star Rating</label>
+              <select class="form-select"><option>5 Stars</option><option>4 Stars</option><option>3 Stars</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-input" value="+91 98765 43210">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" value="info@luxestay.com">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Address</label>
+              <input class="form-input" value="123 Marine Drive, Mumbai, Maharashtra 400020">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Check-in Time</label>
+              <input class="form-input" type="time" value="14:00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Check-out Time</label>
+              <input class="form-input" type="time" value="11:00">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="showToast('✓ Settings saved!','success')">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">System Preferences</div></div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+              <div><div style="font-size:14px;font-weight:500;">Email Notifications</div><div style="font-size:12px;color:var(--text-muted);">Receive booking alerts via email</div></div>
+              <div style="width:40px;height:22px;background:var(--gold);border-radius:11px;cursor:pointer;position:relative;"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;right:2px;transition:0.2s;"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+              <div><div style="font-size:14px;font-weight:500;">SMS Alerts</div><div style="font-size:12px;color:var(--text-muted);">Guest check-in/out SMS</div></div>
+              <div style="width:40px;height:22px;background:var(--gold);border-radius:11px;cursor:pointer;position:relative;"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;right:2px;"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+              <div><div style="font-size:14px;font-weight:500;">Auto Housekeeping</div><div style="font-size:12px;color:var(--text-muted);">Auto-assign rooms on checkout</div></div>
+              <div style="width:40px;height:22px;background:rgba(255,255,255,0.1);border-radius:11px;cursor:pointer;position:relative;"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;">
+              <div><div style="font-size:14px;font-weight:500;">Currency</div><div style="font-size:12px;color:var(--text-muted);">Display currency</div></div>
+              <select class="form-select" style="width:auto;"><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<!-- ============ MODALS ============ -->
+
+<!-- New Reservation Modal -->
+<div class="modal-overlay" id="modal-new-reservation">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">New Reservation</div>
+      <button class="modal-close" onclick="closeModal('new-reservation')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Guest Name</label>
+          <input class="form-input" placeholder="Full name" id="nr-name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" placeholder="+91 XXXXX XXXXX" id="nr-phone">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" placeholder="guest@email.com" id="nr-email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Room Type</label>
+          <select class="form-select" id="nr-type" onchange="updateRoomOptions()">
+            <option>Standard</option>
+            <option>Deluxe</option>
+            <option>Suite</option>
+            <option>Presidential</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Room Number</label>
+          <select class="form-select" id="nr-room"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Number of Guests</label>
+          <input class="form-input" type="number" placeholder="2" min="1" max="6" id="nr-guests" value="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Check-in Date</label>
+          <input class="form-input" type="date" id="nr-checkin">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Check-out Date</label>
+          <input class="form-input" type="date" id="nr-checkout">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Mode</label>
+          <select class="form-select" id="nr-payment">
+            <option>Cash</option>
+            <option>Credit Card</option>
+            <option>UPI</option>
+            <option>Corporate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special Requests</label>
+          <input class="form-input" placeholder="E.g. High floor, late check-in" id="nr-special">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="addReservation()">✓ Confirm Reservation</button>
+        <button class="btn btn-secondary" onclick="closeModal('new-reservation')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Guest Modal -->
+<div class="modal-overlay" id="modal-add-guest">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Guest</div>
+      <button class="modal-close" onclick="closeModal('add-guest')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" placeholder="Full name" id="ag-name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" placeholder="+91 XXXXX XXXXX" id="ag-phone">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Email</label>
+          <input class="form-input" placeholder="guest@email.com" id="ag-email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID Type</label>
+          <select class="form-select" id="ag-idtype">
+            <option>Aadhaar</option>
+            <option>Passport</option>
+            <option>PAN</option>
+            <option>License</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID Number</label>
+          <input class="form-input" placeholder="ID number" id="ag-idno">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Address</label>
+          <input class="form-input" placeholder="Home address" id="ag-address">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nationality</label>
+          <input class="form-input" placeholder="Indian" id="ag-nat" value="Indian">
+        </div>
+        <div class="form-group">
+          <label class="form-label">VIP Guest?</label>
+          <select class="form-select" id="ag-vip">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="addGuest()">✓ Add Guest</button>
+        <button class="btn btn-secondary" onclick="closeModal('add-guest')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Order Modal -->
+<div class="modal-overlay" id="modal-new-order">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">New Restaurant Order</div>
+      <button class="modal-close" onclick="closeModal('new-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Room Number</label>
+          <input class="form-input" placeholder="Room 204" id="no-room">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Order Type</label>
+          <select class="form-select" id="no-type">
+            <option>Room Service</option>
+            <option>Dine-in</option>
+            <option>Takeaway</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Items</label>
+          <textarea class="form-textarea" placeholder="e.g. Paneer Butter Masala x1, Garlic Naan x2, Mango Lassi x1" id="no-items"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimated Amount</label>
+          <input class="form-input" placeholder="₹850" id="no-amount">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special Instructions</label>
+          <input class="form-input" placeholder="Less spicy, extra sauce..." id="no-special">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="addOrder()">✓ Place Order</button>
+        <button class="btn btn-secondary" onclick="closeModal('new-order')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ======== DATA ========
+const rooms = [
+  {id:'101',type:'Standard',floor:1,status:'occupied',price:3200,guest:'Ravi Kumar'},
+  {id:'102',type:'Standard',floor:1,status:'available',price:3200,guest:''},
+  {id:'103',type:'Standard',floor:1,status:'cleaning',price:3200,guest:''},
+  {id:'104',type:'Standard',floor:1,status:'available',price:3200,guest:''},
+  {id:'105',type:'Standard',floor:1,status:'maintenance',price:3200,guest:''},
+  {id:'201',type:'Deluxe',floor:2,status:'occupied',price:5500,guest:'Sunita Patel'},
+  {id:'202',type:'Deluxe',floor:2,status:'available',price:5500,guest:''},
+  {id:'203',type:'Deluxe',floor:2,status:'reserved',price:5500,guest:'Anjali Nair'},
+  {id:'204',type:'Deluxe',floor:2,status:'occupied',price:5500,guest:'Thomas George'},
+  {id:'205',type:'Deluxe',floor:2,status:'cleaning',price:5500,guest:''},
+  {id:'206',type:'Deluxe',floor:2,status:'occupied',price:5500,guest:'Priya Mehta'},
+  {id:'301',type:'Suite',floor:3,status:'occupied',price:9800,guest:'Arjun Sharma'},
+  {id:'302',type:'Suite',floor:3,status:'available',price:9800,guest:''},
+  {id:'303',type:'Suite',floor:3,status:'occupied',price:9800,guest:'Meera Krishnan'},
+  {id:'304',type:'Suite',floor:3,status:'reserved',price:9800,guest:'Dev Oberoi'},
+  {id:'401',type:'Suite',floor:4,status:'available',price:9800,guest:''},
+  {id:'402',type:'Suite',floor:4,status:'occupied',price:9800,guest:'Nalini Verma'},
+  {id:'501',type:'Presidential',floor:5,status:'occupied',price:22000,guest:'Vikram Singh'},
+  {id:'502',type:'Presidential',floor:5,status:'available',price:22000,guest:''},
+];
+
+let reservations = [
+  {id:'BK001',guest:'Arjun Sharma',room:'301',type:'Suite',checkin:'2026-06-01',checkout:'2026-06-05',guests:2,amount:'₹39,200',status:'checked-in',payment:'Credit Card'},
+  {id:'BK002',guest:'Priya Mehta',room:'206',type:'Deluxe',checkin:'2026-06-02',checkout:'2026-06-04',guests:1,amount:'₹11,000',status:'checked-in',payment:'UPI'},
+  {id:'BK003',guest:'Vikram Singh',room:'501',type:'Presidential',checkin:'2026-06-02',checkout:'2026-06-06',guests:3,amount:'₹88,000',status:'confirmed',payment:'Bank Transfer'},
+  {id:'BK004',guest:'Anjali Nair',room:'203',type:'Deluxe',checkin:'2026-06-03',checkout:'2026-06-05',guests:2,amount:'₹11,000',status:'pending',payment:'Cash'},
+  {id:'BK005',guest:'Dev Oberoi',room:'304',type:'Suite',checkin:'2026-06-04',checkout:'2026-06-07',guests:2,amount:'₹29,400',status:'confirmed',payment:'Credit Card'},
+  {id:'BK006',guest:'Sunita Patel',room:'201',type:'Deluxe',checkin:'2026-05-30',checkout:'2026-06-02',guests:1,amount:'₹16,500',status:'checked-in',payment:'Cash'},
+];
+
+let guests = [
+  {name:'Arjun Sharma',phone:'+91 98765 43210',email:'arjun@email.com',idtype:'Aadhaar',stays:4,spent:'₹1.2L',vip:true},
+  {name:'Priya Mehta',phone:'+91 87654 32109',email:'priya@email.com',idtype:'Passport',stays:2,spent:'₹42,000',vip:false},
+  {name:'Vikram Singh',phone:'+91 76543 21098',email:'vikram@email.com',idtype:'Passport',stays:6,spent:'₹3.8L',vip:true},
+  {name:'Anjali Nair',phone:'+91 65432 10987',email:'anjali@email.com',idtype:'Aadhaar',stays:1,spent:'₹11,000',vip:false},
+  {name:'Dev Oberoi',phone:'+91 54321 09876',email:'dev@email.com',idtype:'PAN',stays:3,spent:'₹85,000',vip:true},
+  {name:'Sunita Patel',phone:'+91 43210 98765',email:'sunita@email.com',idtype:'Aadhaar',stays:2,spent:'₹38,000',vip:false},
+  {name:'Thomas George',phone:'+91 32109 87654',email:'thomas@email.com',idtype:'Passport',stays:1,spent:'₹27,500',vip:false},
+  {name:'Meera Krishnan',phone:'+91 21098 76543',email:'meera@email.com',idtype:'Aadhaar',stays:3,spent:'₹68,000',vip:true},
+];
+
+let staffList = [
+  {name:'Mohan Pillai',role:'Front Desk Manager',dept:'Front Office',shift:'Morning',status:'on-duty',salary:'₹42,000'},
+  {name:'Lalita Singh',role:'Housekeeping Supervisor',dept:'Housekeeping',shift:'Morning',status:'on-duty',salary:'₹32,000'},
+  {name:'Rajesh Kumar',role:'Chef',dept:'F&B',shift:'Morning',status:'on-duty',salary:'₹48,000'},
+  {name:'Seema Iyer',role:'Receptionist',dept:'Front Office',shift:'Morning',status:'on-duty',salary:'₹28,000'},
+  {name:'Anil Rao',role:'Bellboy',dept:'Guest Services',shift:'Evening',status:'off-duty',salary:'₹22,000'},
+  {name:'Devika Nair',role:'Housekeeper',dept:'Housekeeping',shift:'Morning',status:'on-duty',salary:'₹24,000'},
+  {name:'Sanjay Verma',role:'Security Guard',dept:'Security',shift:'Night',status:'off-duty',salary:'₹26,000'},
+  {name:'Pooja Mehta',role:'Accounts Executive',dept:'Finance',shift:'Morning',status:'on-duty',salary:'₹36,000'},
+];
+
+let orders = [
+  {id:'ORD-041',room:'301',items:'Butter Chicken, Naan x2',amount:'₹780',status:'delivered'},
+  {id:'ORD-042',room:'204',items:'Club Sandwich, Cold Coffee',amount:'₹420',status:'preparing'},
+  {id:'ORD-043',room:'501',items:'Continental Breakfast',amount:'₹1,200',status:'pending'},
+  {id:'ORD-044',room:'201',items:'Masala Dosa, Filter Coffee',amount:'₹350',status:'preparing'},
+  {id:'ORD-045',room:'102',items:'Veg Biryani, Lassi',amount:'₹620',status:'pending'},
+];
+
+let inventory = [
+  {item:'Bed Linen',cat:'Housekeeping',stock:120,min:30,unit:'Sets',status:'ok'},
+  {item:'Shampoo Bottles',cat:'Amenities',stock:85,min:50,unit:'Pcs',status:'ok'},
+  {item:'Towels',cat:'Housekeeping',stock:200,min:80,unit:'Pcs',status:'ok'},
+  {item:'Soap Bars',cat:'Amenities',stock:45,min:50,unit:'Pcs',status:'low'},
+  {item:'Coffee Sachets',cat:'F&B',stock:12,min:20,unit:'Boxes',status:'critical'},
+  {item:'Toilet Paper',cat:'Housekeeping',stock:300,min:100,unit:'Rolls',status:'ok'},
+  {item:'Mineral Water',cat:'F&B',stock:80,min:60,unit:'Bottles',status:'ok'},
+  {item:'Cleaning Solution',cat:'Housekeeping',stock:18,min:20,unit:'Liters',status:'low'},
+  {item:'Face Tissues',cat:'Amenities',stock:90,min:40,unit:'Boxes',status:'ok'},
+  {item:'Laundry Bags',cat:'Housekeeping',stock:55,min:30,unit:'Pcs',status:'ok'},
+];
+
+const hkTasks = [
+  {room:'101',type:'Standard',priority:'High',assigned:'Devika Nair',status:'in-progress'},
+  {room:'103',type:'Standard',priority:'Normal',assigned:'—',status:'pending'},
+  {room:'205',type:'Deluxe',priority:'Normal',assigned:'Rekha Das',status:'in-progress'},
+  {room:'302',type:'Suite',priority:'High',assigned:'—',status:'pending'},
+  {room:'401',type:'Suite',priority:'Normal',assigned:'—',status:'pending'},
+  {room:'201',type:'Deluxe',priority:'Normal',assigned:'Kavya Ram',status:'completed'},
+  {room:'104',type:'Standard',priority:'Low',assigned:'Devika Nair',status:'completed'},
+];
+
+const menuCats = [
+  {name:'Breakfast',items:14,icon:'🍳'},
+  {name:'Indian Cuisine',items:28,icon:'🍛'},
+  {name:'Continental',items:18,icon:'🥗'},
+  {name:'Chinese',items:16,icon:'🍜'},
+  {name:'Beverages',items:22,icon:'☕'},
+  {name:'Desserts',items:12,icon:'🍮'},
+];
+
+const payments = [
+  {booking:'BK001',guest:'Arjun Sharma',amount:'₹39,200',method:'Credit Card',date:'Jun 1',status:'paid'},
+  {booking:'BK002',guest:'Priya Mehta',amount:'₹11,000',method:'UPI',date:'Jun 2',status:'paid'},
+  {booking:'BK003',guest:'Vikram Singh',amount:'₹44,000',method:'Bank Transfer',date:'Jun 2',status:'partial'},
+  {booking:'BK006',guest:'Sunita Patel',amount:'₹16,500',method:'Cash',date:'May 30',status:'paid'},
+];
+
+const hkStaff = [
+  {name:'Devika Nair',rooms:3,status:'Cleaning Room 205'},
+  {name:'Rekha Das',rooms:2,status:'Cleaning Room 101'},
+  {name:'Kavya Ram',rooms:4,status:'On Break'},
+  {name:'Suresh Pillai',rooms:1,status:'Pending Assignment'},
+];
+
+// ======== PAGE SWITCHING ========
+function switchPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = {
+    dashboard: 'Dashboard', reservations: 'Reservations', rooms: 'Room Management',
+    guests: 'Guest Management', checkin: 'Check In / Out', housekeeping: 'Housekeeping',
+    billing: 'Billing & Invoices', restaurant: 'Restaurant', staff: 'Staff Management',
+    reports: 'Reports & Analytics', inventory: 'Inventory', settings: 'Settings'
+  }[page] || page;
+}
+
+// ======== MODAL ========
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('open');
+  if (id === 'new-reservation') {
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date(Date.now()+86400000).toISOString().split('T')[0];
+    document.getElementById('nr-checkin').value = today;
+    document.getElementById('nr-checkout').value = tomorrow;
+    updateRoomOptions();
+  }
+}
+
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+}
+
+window.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('open');
+  }
+});
+
+// ======== TOAST ========
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (type ? ' ' + type : '');
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ======== RENDER ROOMS ========
+function renderRooms(filter='', typeFilter='') {
+  const grid = document.getElementById('rooms-grid');
+  const filtered = rooms.filter(r =>
+    (filter === '' || r.status === filter) &&
+    (typeFilter === '' || r.type === typeFilter)
+  );
+  grid.innerHTML = filtered.map(r => `
+    <div class="room-card" onclick="showToast('Room ${r.id}: ${r.type} – ${r.status}${r.guest ? ' – ' + r.guest : ''}','')">
+      <div class="room-floor">Floor ${r.floor}</div>
+      <div class="room-number">${r.id}</div>
+      <div class="room-type">${r.type}</div>
+      <div class="room-status ${r.status}">
+        <span class="status-dot"></span>
+        ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}
+      </div>
+      ${r.guest ? `<div style="font-size:11px;color:var(--text-muted);margin-top:6px;">👤 ${r.guest}</div>` : ''}
+      <div class="room-price">₹${r.price.toLocaleString('en-IN')}/night</div>
+    </div>
+  `).join('');
+}
+
+function filterRooms(val) { renderRooms(val, document.querySelector('#page-rooms .filter-select:nth-child(2)')?.value || ''); }
+function filterRoomType(val) { renderRooms(document.querySelector('#page-rooms .filter-select:nth-child(1)')?.value || '', val); }
+
+// ======== RENDER RESERVATIONS ========
+function renderReservations(data) {
+  const tbody = document.getElementById('res-table');
+  const statusMap = {
+    'confirmed': ['tag gold', 'Confirmed'],
+    'pending': ['tag gray', 'Pending'],
+    'cancelled': ['tag red', 'Cancelled'],
+    'checked-in': ['tag green', 'Checked In'],
+  };
+  tbody.innerHTML = data.map(r => {
+    const [cls, lbl] = statusMap[r.status] || ['tag gray', r.status];
+    const initials = r.guest.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `<tr>
+      <td><span style="font-size:12px;color:var(--text-muted);">${r.id}</span></td>
+      <td><span class="guest-avatar-sm">${initials}</span><span class="guest-name">${r.guest}</span></td>
+      <td>Room ${r.room}</td>
+      <td>${r.checkin}</td>
+      <td>${r.checkout}</td>
+      <td>${r.guests}</td>
+      <td class="amount-gold">${r.amount}</td>
+      <td><span class="${cls}">${lbl}</span></td>
+      <td>
+        <button class="action-btn" onclick="showToast('Viewing booking ${r.id}','')">View</button>
+        <button class="action-btn" onclick="showToast('Editing booking ${r.id}','')">Edit</button>
+        <button class="action-btn danger" onclick="cancelReservation('${r.id}')">Cancel</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterReservations(q) {
+  const filtered = q ? reservations.filter(r =>
+    r.guest.toLowerCase().includes(q.toLowerCase()) ||
+    r.room.includes(q) || r.id.toLowerCase().includes(q.toLowerCase())
+  ) : reservations;
+  renderReservations(filtered);
+}
+
+function filterByStatus(s) {
+  const filtered = s ? reservations.filter(r => r.status === s) : reservations;
+  renderReservations(filtered);
+}
+
+function cancelReservation(id) {
+  const r = reservations.find(x => x.id === id);
+  if (r) { r.status = 'cancelled'; renderReservations(reservations); showToast('Reservation ' + id + ' cancelled.', 'error'); }
+}
+
+// ======== ADD RESERVATION ========
+function addReservation() {
+  const name = document.getElementById('nr-name').value;
+  const room = document.getElementById('nr-room').value;
+  const type = document.getElementById('nr-type').value;
+  const checkin = document.getElementById('nr-checkin').value;
+  const checkout = document.getElementById('nr-checkout').value;
+  const gs = document.getElementById('nr-guests').value;
+  const payment = document.getElementById('nr-payment').value;
+  if (!name || !room) { showToast('Please fill in guest name and room.', 'error'); return; }
+  const id = 'BK' + String(reservations.length + 1).padStart(3,'0');
+  const roomData = rooms.find(r => r.id === room);
+  const nights = Math.max(1, Math.round((new Date(checkout)-new Date(checkin))/(1000*60*60*24)));
+  const amount = roomData ? '₹' + (roomData.price * nights).toLocaleString('en-IN') : '—';
+  reservations.unshift({id,guest:name,room,type,checkin,checkout,guests:gs,amount,status:'confirmed',payment});
+  document.getElementById('res-badge').textContent = reservations.filter(r=>r.status==='pending'||r.status==='confirmed').length;
+  renderReservations(reservations);
+  closeModal('new-reservation');
+  showToast('✓ Reservation ' + id + ' confirmed for ' + name + '!', 'success');
+  // clear
+  ['nr-name','nr-phone','nr-email','nr-special'].forEach(id => document.getElementById(id).value = '');
+}
+
+function updateRoomOptions() {
+  const type = document.getElementById('nr-type').value;
+  const avail = rooms.filter(r => r.status === 'available' && r.type === type);
+  const sel = document.getElementById('nr-room');
+  sel.innerHTML = avail.length
+    ? avail.map(r => `<option value="${r.id}">${r.id} (Floor ${r.floor})</option>`).join('')
+    : `<option>No rooms available</option>`;
+}
+
+// ======== GUESTS ========
+function renderGuests(data) {
+  document.getElementById('guests-table').innerHTML = data.map(g => {
+    const initials = g.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `<tr>
+      <td><span class="guest-avatar-sm">${initials}</span><span class="guest-name">${g.name}</span></td>
+      <td>${g.phone}</td>
+      <td style="color:var(--text-muted);">${g.email}</td>
+      <td>${g.idtype}</td>
+      <td>${g.stays}</td>
+      <td class="amount-gold">${g.spent}</td>
+      <td>${g.vip ? '<span class="tag gold">⭐ VIP</span>' : '<span class="tag gray">Regular</span>'}</td>
+      <td>
+        <button class="action-btn" onclick="showToast('Viewing ${g.name}','')">View</button>
+        <button class="action-btn danger" onclick="showToast('${g.name} removed','error')">Remove</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterGuests(q) {
+  const filtered = q ? guests.filter(g => g.name.toLowerCase().includes(q.toLowerCase()) || g.email.includes(q)) : guests;
+  renderGuests(filtered);
+}
+
+function addGuest() {
+  const name = document.getElementById('ag-name').value;
+  const phone = document.getElementById('ag-phone').value;
+  const email = document.getElementById('ag-email').value;
+  const idtype = document.getElementById('ag-idtype').value;
+  const vip = document.getElementById('ag-vip').value === 'yes';
+  if (!name) { showToast('Please enter guest name.', 'error'); return; }
+  guests.unshift({name,phone,email,idtype,stays:0,spent:'₹0',vip});
+  renderGuests(guests);
+  closeModal('add-guest');
+  showToast('✓ Guest ' + name + ' added!', 'success');
+}
+
+// ======== CHECK-IN / OUT ========
+function doCheckin() {
+  const booking = document.getElementById('ci-booking').value;
+  const room = document.getElementById('ci-room').value;
+  const idno = document.getElementById('ci-idno').value;
+  if (!booking || !room) { showToast('Please enter booking and room.', 'error'); return; }
+  showToast('✓ Check-in successful! Key card prepared for Room ' + room, 'success');
+  renderCheckinSchedule();
+}
+
+function doCheckout() {
+  const room = document.getElementById('co-room').value;
+  if (!room) { showToast('Please enter room number.', 'error'); return; }
+  showToast('✓ Check-out done! Invoice generated and room queued for housekeeping.', 'success');
+}
+
+function clearCheckin() {
+  ['ci-booking','ci-room','ci-idno'].forEach(id => document.getElementById(id).value = '');
+}
+
+function renderCheckinSchedule() {
+  const schedule = [
+    {time:'08:30',guest:'Nalini Verma',room:'402',type:'Suite',status:'checked-in'},
+    {time:'10:00',guest:'Sunita Patel',room:'201',type:'Deluxe',status:'checked-out'},
+    {time:'12:00',guest:'Anjali Nair',room:'203',type:'Deluxe',status:'due-checkin'},
+    {time:'14:00',guest:'Dev Oberoi',room:'304',type:'Suite',status:'due-checkin'},
+    {time:'16:00',guest:'Vikram Singh',room:'501',type:'Presidential',status:'pending'},
+  ];
+  document.getElementById('checkin-schedule').innerHTML = schedule.map(s => {
+    const st = {
+      'checked-in': '<span class="tag green">Checked In</span>',
+      'checked-out': '<span class="tag gray">Checked Out</span>',
+      'due-checkin': '<span class="tag gold">Due Check-in</span>',
+      'pending': '<span class="tag blue">Upcoming</span>',
+    }[s.status] || s.status;
+    return `<tr>
+      <td style="color:var(--gold)">${s.time}</td>
+      <td class="guest-name">${s.guest}</td>
+      <td>Room ${s.room}</td>
+      <td>${s.type}</td>
+      <td>${st}</td>
+      <td><button class="action-btn" onclick="showToast('Processing ${s.guest}...','')">Process</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ======== HOUSEKEEPING ========
+function renderHousekeeping() {
+  document.getElementById('hk-table').innerHTML = hkTasks.map(t => {
+    const pCls = {High:'red',Normal:'gold',Low:'blue'}[t.priority] || 'gray';
+    const sCls = {completed:'green','in-progress':'gold',pending:'gray'}[t.status] || 'gray';
+    return `<tr>
+      <td><strong>${t.room}</strong></td>
+      <td style="color:var(--text-muted)">${t.type}</td>
+      <td><span class="tag ${pCls}">${t.priority}</span></td>
+      <td style="font-size:12px;">${t.assigned}</td>
+      <td><span class="tag ${sCls}">${t.status}</span></td>
+      <td><button class="action-btn" onclick="showToast('Room ${t.room} status updated','success')">Update</button></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('hk-staff').innerHTML = hkStaff.map(s => `
+    <div class="tl-item">
+      <div class="tl-dot ${s.rooms > 2 ? 'green' : 'blue'}"></div>
+      <div class="tl-content">
+        <div class="tl-title">${s.name}</div>
+        <div class="tl-sub">${s.status} · ${s.rooms} rooms assigned</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function assignAll() {
+  showToast('✓ All pending rooms assigned to available staff!', 'success');
+}
+
+// ======== BILLING ========
+const invoiceData = {
+  BK001: {guest:'Arjun Sharma',room:'301',id:'INV-2026-001',date:'Jun 02, 2026',items:[
+    {desc:'Suite – 4 nights @ ₹9,800',amt:'₹39,200'},
+    {desc:'Room Service (3 orders)',amt:'₹2,100'},
+    {desc:'Mini Bar',amt:'₹850'},
+    {desc:'Laundry',amt:'₹400'},
+  ],tax:'₹4,255',total:'₹46,805'},
+  BK002: {guest:'Priya Mehta',room:'206',id:'INV-2026-002',date:'Jun 02, 2026',items:[
+    {desc:'Deluxe – 2 nights @ ₹5,500',amt:'₹11,000'},
+    {desc:'Breakfast (2 days)',amt:'₹900'},
+  ],tax:'₹1,190',total:'₹13,090'},
+  BK003: {guest:'Vikram Singh',room:'501',id:'INV-2026-003',date:'Jun 02, 2026',items:[
+    {desc:'Presidential Suite – 4 nights @ ₹22,000',amt:'₹88,000'},
+    {desc:'Spa Package',amt:'₹8,500'},
+    {desc:'Airport Transfer',amt:'₹3,000'},
+    {desc:'Restaurant Charges',amt:'₹6,200'},
+  ],tax:'₹10,575',total:'₹1,06,275'},
+};
+
+function loadInvoice(bk) {
+  const prev = document.getElementById('invoice-preview');
+  if (!bk) { prev.style.display='none'; return; }
+  const d = invoiceData[bk];
+  if (!d) return;
+  prev.style.display = 'block';
+  document.getElementById('inv-id').textContent = d.id;
+  document.getElementById('inv-date').textContent = d.date;
+  document.getElementById('inv-guest-info').innerHTML = `
+    <strong>${d.guest}</strong><br>
+    <span style="color:var(--text-muted)">Room ${d.room} · Booking ${bk}</span>
+  `;
+  document.getElementById('inv-items').innerHTML = d.items.map(i => `
+    <div class="invoice-row"><span style="color:var(--text-secondary)">${i.desc}</span><span>${i.amt}</span></div>
+  `).join('') +
+  `<div class="invoice-row"><span style="color:var(--text-muted)">GST (12%)</span><span>${d.tax}</span></div>`;
+  document.getElementById('inv-total').innerHTML = `<span>Total Amount</span><span class="amount-gold">${d.total}</span>`;
+}
+
+function renderPayments() {
+  document.getElementById('payments-table').innerHTML = payments.map(p => `
+    <tr>
+      <td style="font-size:12px;color:var(--text-muted)">${p.booking}</td>
+      <td class="guest-name">${p.guest}</td>
+      <td class="amount-gold">${p.amount}</td>
+      <td>${p.method}</td>
+      <td>${p.date}</td>
+      <td><span class="tag ${p.status==='paid'?'green':p.status==='partial'?'gold':'red'}">${p.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ======== RESTAURANT ========
+function renderOrders() {
+  document.getElementById('orders-table').innerHTML = orders.map(o => {
+    const cls = {delivered:'green',preparing:'gold',pending:'gray'}[o.status] || 'gray';
+    return `<tr>
+      <td style="font-size:12px;color:var(--text-muted)">${o.id}</td>
+      <td><strong>Room ${o.room}</strong></td>
+      <td style="font-size:12px">${o.items}</td>
+      <td class="amount-gold">${o.amount}</td>
+      <td><span class="tag ${cls}">${o.status}</span></td>
+      <td>
+        <button class="action-btn" onclick="markDelivered('${o.id}')">✓ Done</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('menu-cats').innerHTML = menuCats.map(m => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg-card2);border-radius:8px;cursor:pointer;border:1px solid var(--border);transition:all 0.2s;" onclick="showToast('Viewing ${m.name} menu (${m.items} items)','')">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:20px">${m.icon}</span>
+        <div>
+          <div style="font-size:14px;font-weight:500">${m.name}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${m.items} items</div>
+        </div>
+      </div>
+      <span style="color:var(--text-muted)">→</span>
+    </div>
+  `).join('');
+}
+
+function markDelivered(id) {
+  const o = orders.find(x => x.id === id);
+  if (o) { o.status = 'delivered'; renderOrders(); showToast('✓ Order ' + id + ' marked as delivered!', 'success'); }
+}
+
+function addOrder() {
+  const room = document.getElementById('no-room').value;
+  const items = document.getElementById('no-items').value;
+  const amount = document.getElementById('no-amount').value;
+  if (!room || !items) { showToast('Please enter room and items.', 'error'); return; }
+  const id = 'ORD-0' + (orders.length + 46);
+  orders.unshift({id, room, items, amount: amount || '—', status:'pending'});
+  renderOrders();
+  closeModal('new-order');
+  showToast('✓ Order ' + id + ' placed for Room ' + room + '!', 'success');
+}
+
+// ======== STAFF ========
+function renderStaff() {
+  document.getElementById('staff-table').innerHTML = staffList.map(s => {
+    const sCls = s.status === 'on-duty' ? 'green' : 'gray';
+    return `<tr>
+      <td><strong>${s.name}</strong></td>
+      <td style="color:var(--text-muted)">${s.role}</td>
+      <td>${s.dept}</td>
+      <td>${s.shift}</td>
+      <td><span class="tag ${sCls}">${s.status}</span></td>
+      <td class="amount-gold">${s.salary}</td>
+      <td>
+        <button class="action-btn" onclick="showToast('Viewing ${s.name}','')">View</button>
+        <button class="action-btn" onclick="showToast('Editing ${s.name}','')">Edit</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ======== INVENTORY ========
+function renderInventory() {
+  document.getElementById('inventory-table').innerHTML = inventory.map(i => {
+    const cls = i.status === 'ok' ? 'green' : i.status === 'low' ? 'gold' : 'red';
+    const lbl = i.status === 'ok' ? 'In Stock' : i.status === 'low' ? 'Low Stock' : 'Critical';
+    return `<tr>
+      <td><strong>${i.item}</strong></td>
+      <td style="color:var(--text-muted)">${i.cat}</td>
+      <td>${i.stock}</td>
+      <td>${i.min}</td>
+      <td>${i.unit}</td>
+      <td><span class="tag ${cls}">${lbl}</span></td>
+      <td>
+        <button class="action-btn" onclick="showToast('Restocking ${i.item}...','')">Restock</button>
+        <button class="action-btn" onclick="showToast('Editing ${i.item}','')">Edit</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ======== DASHBOARD ========
+function buildDashboard() {
+  // Occupancy chart
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const vals = [62,70,68,75,80,92,78];
+  const maxV = Math.max(...vals);
+  const chart = document.getElementById('occ-chart');
+  const labels = document.getElementById('occ-labels');
+  chart.innerHTML = vals.map((v,i) =>
+    `<div class="occ-col" style="height:${Math.round((v/maxV)*100)}%;opacity:${v===78?1:.6};" title="${days[i]}: ${v}%" onclick="showToast('${days[i]}: ${v}% occupancy','')"></div>`
+  ).join('');
+  labels.innerHTML = days.map(d => `<span>${d}</span>`).join('');
+
+  // Activity feed
+  const activities = [
+    {type:'green',title:'Arjun Sharma checked in','sub':'Room 301 · Suite · 08:42 AM'},
+    {type:'blue',title:'New reservation: Dev Oberoi','sub':'Room 304 · Suite · For Jun 4'},
+    {type:'red',title:'Room 105 flagged for maintenance','sub':'AC repair needed · 10:15 AM'},
+    {type:'green',title:'Invoice #INV-2026-001 paid','sub':'₹46,805 · Credit Card · 11:00 AM'},
+    {type:'blue',title:'Housekeeping: Room 103 cleaned','sub':'Devika Nair · 11:30 AM'},
+  ];
+  document.getElementById('activity-feed').innerHTML = activities.map(a => `
+    <div class="tl-item">
+      <div class="tl-dot ${a.type}"></div>
+      <div class="tl-content">
+        <div class="tl-title">${a.title}</div>
+        <div class="tl-sub">${a.sub}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Today's checkins
+  const todayCIs = reservations.filter(r => r.status === 'confirmed' || r.status === 'checked-in').slice(0,5);
+  document.getElementById('today-checkins').innerHTML = todayCIs.map(r => {
+    const initials = r.guest.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const cls = r.status === 'checked-in' ? 'green' : 'gold';
+    const lbl = r.status === 'checked-in' ? 'Checked In' : 'Confirmed';
+    return `<tr>
+      <td><span class="guest-avatar-sm">${initials}</span><span class="guest-name">${r.guest}</span></td>
+      <td>Room ${r.room}</td>
+      <td>${r.type}</td>
+      <td>${Math.round((new Date(r.checkout)-new Date(r.checkin))/(1000*60*60*24))}</td>
+      <td class="amount-gold">${r.amount}</td>
+      <td><span class="tag ${cls}">${lbl}</span></td>
+      <td><button class="action-btn" onclick="showToast('Processing ${r.guest}...','')">Process</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ======== DATE ========
+function setDate() {
+  const d = new Date();
+  document.getElementById('current-date').textContent =
+    d.toLocaleDateString('en-IN', {weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+
+// ======== INIT ========
+function init() {
+  setDate();
+  buildDashboard();
+  renderRooms();
+  renderReservations(reservations);
+  renderGuests(guests);
+  renderCheckinSchedule();
+  renderHousekeeping();
+  renderPayments();
+  renderOrders();
+  renderStaff();
+  renderInventory();
+}
+
+init();
+</script>
+</body>
+</html>
