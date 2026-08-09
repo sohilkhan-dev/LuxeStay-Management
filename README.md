@@ -1,5 +1,3 @@
-# LuxeStay Management
+# 🏨 HotelVista
 
-## 🚀 Live Demo
-
-[View Live Project](https://sohilkhan-dev.github.io/LuxeStay-Management/)
+🔗 [Live Demo](https://sohilkhan-dev.github.io/LuxeStay-Management/)
